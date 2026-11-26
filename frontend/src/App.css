@@ -1,0 +1,360 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap');
+
+:root {
+  --color-dark: #12161a;
+  --color-dark-card: #1a1f26;
+  --color-gold: #c5a880;
+  --color-gold-hover: #d4b890;
+  --color-cream: #f9f8f6;
+  --color-text-muted: #a0a6b1;
+  --font-serif: 'Cinzel', serif;
+  --font-sans: 'Plus Jakarta Sans', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--color-dark);
+  color: var(--color-cream);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* Navbar */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background: rgba(18, 22, 26, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(197, 168, 128, 0.2);
+}
+
+.nav-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.2rem 2rem;
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-logo {
+  font-family: var(--font-serif);
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: var(--color-gold);
+}
+
+.brand-sub {
+  font-size: 0.65rem;
+  letter-spacing: 3px;
+  color: var(--color-text-muted);
+}
+
+.nav-links a {
+  color: var(--color-cream);
+  text-decoration: none;
+  margin: 0 1.5rem;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+  transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: var(--color-gold);
+}
+
+/* Buttons */
+.btn-gold-fill {
+  background: var(--color-gold);
+  color: var(--color-dark);
+  border: none;
+  padding: 0.75rem 1.6rem;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-gold-fill:hover {
+  background: var(--color-gold-hover);
+  transform: translateY(-2px);
+}
+
+.btn-gold-outline {
+  background: transparent;
+  color: var(--color-gold);
+  border: 1px solid var(--color-gold);
+  padding: 0.6rem 1.4rem;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-gold-outline:hover {
+  background: var(--color-gold);
+  color: var(--color-dark);
+}
+
+/* Hero Section */
+.hero-section {
+  position: relative;
+  height: 100vh;
+  background: url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 1rem;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, rgba(18,22,26,0.4) 0%, rgba(18,22,26,0.85) 100%);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 10;
+  max-width: 900px;
+}
+
+.hero-subtitle {
+  font-size: 0.85rem;
+  letter-spacing: 5px;
+  color: var(--color-gold);
+  margin-bottom: 1rem;
+}
+
+.hero-title {
+  font-family: var(--font-serif);
+  font-size: 3.5rem;
+  font-weight: 400;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+}
+
+.hero-desc {
+  font-size: 1.1rem;
+  color: var(--color-text-muted);
+  max-width: 650px;
+  margin: 0 auto 2.5rem;
+}
+
+/* Quick Search Bar */
+.search-bar {
+  background: rgba(26, 31, 38, 0.9);
+  border: 1px solid rgba(197, 168, 128, 0.3);
+  padding: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  backdrop-filter: blur(8px);
+  gap: 1rem;
+}
+
+.search-field {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  flex: 1;
+}
+
+.search-field label {
+  font-size: 0.7rem;
+  letter-spacing: 1.5px;
+  color: var(--color-gold);
+  margin-bottom: 0.3rem;
+}
+
+.search-field input,
+.search-field select {
+  background: transparent;
+  border: none;
+  color: var(--color-cream);
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  outline: none;
+}
+
+.search-divider {
+  width: 1px;
+  height: 40px;
+  background: rgba(197, 168, 128, 0.2);
+}
+
+/* Section Header */
+.rooms-section, .amenities-section {
+  padding: 6rem 2rem;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.section-subtitle {
+  font-size: 0.8rem;
+  letter-spacing: 4px;
+  color: var(--color-gold);
+}
+
+.section-title {
+  font-family: var(--font-serif);
+  font-size: 2.5rem;
+  font-weight: 400;
+  margin-top: 0.5rem;
+}
+
+.gold-divider {
+  width: 60px;
+  height: 2px;
+  background: var(--color-gold);
+  margin: 1rem auto 0;
+}
+
+/* Rooms Cards */
+.rooms-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 2.5rem;
+}
+
+.room-card {
+  background: var(--color-dark-card);
+  border: 1px solid rgba(197, 168, 128, 0.15);
+  overflow: hidden;
+  transition: transform 0.4s ease, border-color 0.4s ease;
+}
+
+.room-card:hover {
+  transform: translateY(-8px);
+  border-color: var(--color-gold);
+}
+
+.room-image-wrapper {
+  position: relative;
+  height: 240px;
+}
+
+.room-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.room-badge {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  background: rgba(18, 22, 26, 0.85);
+  border: 1px solid var(--color-gold);
+  color: var(--color-gold);
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+}
+
+.room-info {
+  padding: 2rem;
+}
+
+.room-capacity {
+  font-size: 0.75rem;
+  color: var(--color-gold);
+  letter-spacing: 1px;
+}
+
+.room-name {
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  margin: 0.4rem 0 0.8rem;
+}
+
+.room-desc {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  margin-bottom: 1.5rem;
+}
+
+.room-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btn-room-details {
+  background: none;
+  border: none;
+  color: var(--color-cream);
+  font-size: 0.85rem;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* Amenities */
+.amenities-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.amenity-card {
+  background: var(--color-dark-card);
+  border: 1px solid rgba(197, 168, 128, 0.1);
+  padding: 2.5rem 2rem;
+  text-align: center;
+}
+
+.amenity-icon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.amenity-card h4 {
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  color: var(--color-gold);
+  margin-bottom: 0.6rem;
+}
+
+.amenity-card p {
+  font-size: 0.88rem;
+  color: var(--color-text-muted);
+}
+
+/* Footer */
+.luxury-footer {
+  border-top: 1px solid rgba(197, 168, 128, 0.2);
+  padding: 3rem 2rem;
+  text-align: center;
+  background: #0d1013;
+}
+
+.footer-content p {
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  color: var(--color-text-muted);
+  margin-top: 1rem;
+}
