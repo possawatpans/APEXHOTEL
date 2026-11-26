@@ -1,114 +1,227 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+
+// ดึงค่า VITE_BACKEND_URL หากไม่พบให้ใช้ Fallback เป็น URL บน Vercel โดยตรง
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'https://apexhotel-lemon.vercel.app';
 
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState([
-    { sender: 'ai', text: 'สวัสดีครับ APEX AI Assistant ยินดีให้บริการ สอบถามข้อมูลห้องพักได้เลยครับ' }
-  ]);
   const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [messages, setMessages] = useState([
+    {
+      sender: 'ai',
+      text: 'สวัสดีครับ APEX AI Assistant ยินดีให้บริการ สอบถามข้อมูลห้องพัก หรือบริการของโรงแรมได้เลยครับ'
+    }
+  ]);
 
-  const handleSend = async () => {
-    if (!input.trim()) return;
-    const userMsg = input;
-    setMessages((prev) => [...prev, { sender: 'user', text: userMsg }]);
+  const messagesEndRef = useRef(null);
+
+  // เลื่อนหน้าต่างแชตลงล่างสุดอัตโนมัติเมื่อมีข้อความใหม่
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    if (isOpen) {
+      scrollToBottom();
+    }
+  }, [messages, isOpen]);
+
+  const handleSendMessage = async (e) => {
+    e.preventDefault();
+    if (!input.trim() || isLoading) return;
+
+    const userMessage = input.trim();
     setInput('');
 
+    // แสดงข้อความของผู้ใช้ทันที
+    setMessages((prev) => [...prev, { sender: 'user', text: userMessage }]);
+    setIsLoading(true);
+
     try {
-      // ยิงไปที่ Backend Express API (Port 5000)
-      const res = await fetch('http://localhost:5000/api/chat', {
+      const response = await fetch(`${BACKEND_URL}/api/chat`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: userMsg })
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ message: userMessage })
       });
-      const data = await res.json();
-      setMessages((prev) => [...prev, { sender: 'ai', text: data.reply || 'ขออภัย ไม่สามารถประมวลผลได้' }]);
-    } catch (err) {
-      setMessages((prev) => [...prev, { sender: 'ai', text: 'ไม่สามารถติดต่อเซิร์ฟเวอร์ AI ได้ในขณะนี้' }]);
+
+      const data = await response.json();
+
+      if (response.ok && data.reply) {
+        setMessages((prev) => [...prev, { sender: 'ai', text: data.reply }]);
+      } else {
+        setMessages((prev) => [
+          ...prev,
+          { sender: 'ai', text: 'ไม่สามารถติดต่อเซิร์ฟเวอร์ AI ได้ในขณะนี้' }
+        ]);
+      }
+    } catch (error) {
+      console.error('Chat API Error:', error);
+      setMessages((prev) => [
+        ...prev,
+        { sender: 'ai', text: 'ไม่สามารถติดต่อเซิร์ฟเวอร์ AI ได้ในขณะนี้' }
+      ]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <div style={{ position: 'fixed', bottom: '20px', right: '20px', zIndex: 9999 }}>
-      {!isOpen ? (
+      {/* ปุ่มเปิด/ปิด แชต */}
+      {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
           style={{
-            background: '#C5A880',
-            color: '#12161A',
+            padding: '12px 20px',
+            backgroundColor: '#c5a880',
+            color: '#1a1a1a',
             border: 'none',
-            padding: '14px 22px',
-            borderRadius: '30px',
+            borderRadius: '25px',
             fontWeight: 'bold',
             cursor: 'pointer',
-            boxShadow: '0 4px 15px rgba(0,0,0,0.4)'
+            boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
           }}
         >
-          💬 AI Assistant
+          💬 APEX Assistant
         </button>
-      ) : (
+      )}
+
+      {/* หน้าต่างแชต */}
+      {isOpen && (
         <div
           style={{
-            width: '340px',
-            height: '450px',
-            background: '#1A1F26',
-            border: '1px solid #C5A880',
+            width: '350px',
+            height: '480px',
+            backgroundColor: '#14171f',
+            border: '1px solid #c5a880',
             borderRadius: '12px',
             display: 'flex',
             flexDirection: 'column',
-            boxShadow: '0 10px 25px rgba(0,0,0,0.5)'
+            overflow: 'hidden',
+            boxShadow: '0 8px 24px rgba(0,0,0,0.5)'
           }}
         >
+          {/* ส่วนหัว (Header) */}
           <div
             style={{
-              background: '#12161A',
-              padding: '12px 16px',
-              borderBottom: '1px solid rgba(197, 168, 128, 0.3)',
+              padding: '14px 16px',
+              backgroundColor: '#1f2430',
+              borderBottom: '1px solid #2a3142',
               display: 'flex',
-              justify: 'space-between',
+              justifyContent: 'space-between',
               alignItems: 'center',
-              color: '#C5A880',
+              color: '#c5a880',
               fontWeight: 'bold'
             }}
           >
             <span>APEX Hotel AI</span>
             <button
               onClick={() => setIsOpen(false)}
-              style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer' }}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: '#aaa',
+                fontSize: '18px',
+                cursor: 'pointer'
+              }}
             >
               ✕
             </button>
           </div>
-          <div style={{ flex: 1, padding: '12px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            {messages.map((m, i) => (
+
+          {/* รายการข้อความ (Messages List) */}
+          <div
+            style={{
+              flex: 1,
+              padding: '16px',
+              overflowY: 'auto',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '12px'
+            }}
+          >
+            {messages.map((msg, index) => (
               <div
-                key={i}
+                key={index}
                 style={{
-                  alignSelf: m.sender === 'user' ? 'flex-end' : 'flex-start',
-                  background: m.sender === 'user' ? '#C5A880' : '#2A303C',
-                  color: m.sender === 'user' ? '#12161A' : '#F9F8F6',
-                  padding: '8px 12px',
-                  borderRadius: '10px',
+                  alignSelf: msg.sender === 'user' ? 'flex-end' : 'flex-start',
                   maxWidth: '80%',
-                  fontSize: '0.85rem'
+                  padding: '10px 14px',
+                  borderRadius: '10px',
+                  fontSize: '14px',
+                  lineHeight: '1.4',
+                  backgroundColor: msg.sender === 'user' ? '#c5a880' : '#2a3142',
+                  color: msg.sender === 'user' ? '#1a1a1a' : '#ffffff',
+                  wordBreak: 'break-word'
                 }}
               >
-                {m.text}
+                {msg.text}
               </div>
             ))}
+            {isLoading && (
+              <div
+                style={{
+                  alignSelf: 'flex-start',
+                  color: '#888',
+                  fontSize: '13px',
+                  fontStyle: 'italic'
+                }}
+              >
+                กำลังพิมพ์...
+              </div>
+            )}
+            <div ref={messagesEndRef} />
           </div>
-          <div style={{ padding: '10px', display: 'flex', gap: '6px', borderTop: '1px solid rgba(197,168,128,0.2)' }}>
+
+          {/* ฟอร์มกรอกข้อความส่ง */}
+          <form
+            onSubmit={handleSendMessage}
+            style={{
+              padding: '12px',
+              backgroundColor: '#1f2430',
+              borderTop: '1px solid #2a3142',
+              display: 'flex',
+              gap: '8px'
+            }}
+          >
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSend()}
               placeholder="พิมพ์คำถาม..."
-              style={{ flex: 1, background: '#12161A', border: '1px solid #333', color: '#fff', padding: '8px', borderRadius: '4px' }}
+              autoComplete="off"
+              disabled={isLoading}
+              style={{
+                flex: 1,
+                padding: '8px 12px',
+                borderRadius: '6px',
+                border: '1px solid #3b4252',
+                backgroundColor: '#14171f',
+                color: '#fff',
+                fontSize: '14px',
+                outline: 'none'
+              }}
             />
-            <button onClick={handleSend} style={{ background: '#C5A880', border: 'none', padding: '0 12px', borderRadius: '4px', cursor: 'pointer' }}>
+            <button
+              type="submit"
+              disabled={isLoading}
+              style={{
+                padding: '8px 16px',
+                backgroundColor: '#c5a880',
+                color: '#1a1a1a',
+                border: 'none',
+                borderRadius: '6px',
+                fontWeight: 'bold',
+                cursor: isLoading ? 'not-allowed' : 'pointer',
+                opacity: isLoading ? 0.6 : 1
+              }}
+            >
               ส่ง
             </button>
-          </div>
+          </form>
         </div>
       )}
     </div>
